@@ -2,13 +2,17 @@ const express=require("express");
 
 const productRouter=express.Router();
 
-productRouter.route('/').get((req,res)=>{
-    // res.send("Home of product")
-    res.render('products',{title:'Product Page'});
-})
+function router(menu){
+    productRouter.route('/').get((req,res)=>{
+        // res.send("Home of product")
+        res.render('products',{title:'Product Page',menu});
+    })
 
-productRouter.route('/details').get((req,res)=>{
-    res.send("Details of product")
-})
+    productRouter.route('/details').get((req,res)=>{
+        res.send("Details of product")
+    })
 
-module.exports = productRouter;
+    return productRouter;
+}
+
+module.exports = router;
