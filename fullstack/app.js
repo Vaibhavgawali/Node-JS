@@ -1,4 +1,6 @@
 const express = require("express");
+const {dbConnect}=require('./src/controller/dbController');
+
 const port=8112;
 const app = express();
 
@@ -27,5 +29,6 @@ app.use('/category',categoryRouter)
 
 app.listen(port,(err)=>{
     if(err) throw err;
+    dbConnect();
     console.log("Listening on port "+ port + " ...");
 })
