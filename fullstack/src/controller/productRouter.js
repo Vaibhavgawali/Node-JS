@@ -1,6 +1,8 @@
 const express=require("express");
 const productRouter=express.Router();
 
+const mongo=require('mongodb');
+
 const {getData}=require('./dbController');
 
 // product_data=[
@@ -525,9 +527,21 @@ function router(menu){
         res.render('products',{title:'Product Page',menu,product_data});
     })
 
-    productRouter.route('/details').get((req,res)=>{
-        res.send("Details of product")
+    productRouter.route('/category/:id').get(async(req,res)=>{
+        let id=req.params.id;
+        query={"category_id":Number(id)};
+        // res.send(id)
+        let product_data=await getData('products',query);
+        res.render('products',{title:'Product Listing Page',menu,product_data})
     })
+
+    productRouter.route('/details/:id').get(async (req,res)=>{
+        id=req.params.id;
+        query={"_id":mongo.ObjectId(id)}
+        let product_data=await getData('products',query);
+        res.render('products',{title:'Product Listing Page',menu,product_data}) 
+    })
+
 
     return productRouter;
 }
