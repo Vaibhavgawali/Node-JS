@@ -1,9 +1,8 @@
-const express=require('express');
-const request= require('request');
+import express from 'express';
+import request from 'request';
 
 const app=express();
-
-const port=9112;
+const port=process.env.PORT || 9112;
 
 // midlleware
 app.use(express.static(__dirname+'/public'));
@@ -11,8 +10,8 @@ app.set('views','./src/views');
 app.set('view engine', 'ejs');
 
 app.get('/weather',(req,res)=>{
-    city = req.query.city?req.query.city:'Hingoli';
-    let url =`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&mode=json&units=metric&cnt=5&appid=fbf712a5a83d7305c3cda4ca8fe7ef29`;
+    let city_name = req.query.city ? req.query.city : 'Pune';
+    let url =`https://api.openweathermap.org/data/2.5/forecast/daily?q=${city_name}&mode=json&units=metric&cnt=5&appid=fbf712a5a83d7305c3cda4ca8fe7ef29`;
     
     request(url,(err,data)=>{
         if(err) throw err;
