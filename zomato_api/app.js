@@ -7,7 +7,7 @@ dotenv.config()
 
 const app = express()
 const port = process.env.PORT;
-const { dbConnect, getData } = require("./src/controller/dbController")
+const { dbConnect, getData ,getDataSort} = require("./src/controller/dbController")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -41,7 +41,7 @@ app.get('/restaurants', async (req, res) => {
         query = { 
                     state_id: stateId 
                 }
-    } if (mealId) {
+    } else if (mealId) {
         query = { 
                     "mealTypes.mealtype_id":mealId 
                 }
@@ -61,19 +61,37 @@ app.get('/meals', async (req, res) => {
 
 // filters
 app.get('/filters/:mealId', async (req, res) => {
+    let query = {}
     let collName = 'RestaurantData'
     let mealId = Number(req.params.mealId)
     let cuisineId = Number(req.query.cuisineId)
-    let query = {"mealTypes.mealtype_id":mealId}
-    if(cuisineId){
-        let query = {
-                        "mealTypes.mealtype_id":mealId,
-                        "cuisines.cuisine_id": cuisineId
-                    }
+    let lcost = Number(req.query.lcost)
+    let hcost = Number(req.query.hcost)
+
+    let sort={cost:1};
+    if(req.query.sort){
+        sort ={cost: req.query.sort}
     }
-    let output = await getData(collName,query);
+    
+    if(cuisineId){
+        query = {
+                    "mealTypes.mealtype_id":mealId,
+                    "cuisines.cuisine_id": cuisineId
+                }
+    }else if(lcost && hcost){
+        query = {
+                    "mealTypes.mealtype_id":mealId,
+                    $and: [{cost:{$gt:lcost,$lt:hcost}}]
+                }
+    }else{
+        query = {
+                    "mealTypes.mealtype_id":mealId
+                }
+    }
+    let output = await getDataSort(collName,query,sort);
     res.send(output);
 })
+
 
 app.listen(port, (err) => {
     if (err) throw err

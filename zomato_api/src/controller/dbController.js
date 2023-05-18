@@ -10,9 +10,23 @@ function dbConnect(){
 }
 
 async function getData(colName,query){
-    return  await db.collection(colName).find(query).toArray();
+    try {
+        output=await db.collection(colName).find(query).toArray();
+    } catch (error) {
+        output={error:error.message};
+    }
+    return  output;
+}
+
+async function getDataSort(collName,query,sort){
+    try {
+        output=await db.collection(collName).find(query).sort(sort).toArray();
+    } catch (error) {
+        output= {error:"sort limit exceeded"};   
+    }
+    return output;
 }
 
 module.exports={
-    dbConnect,getData 
+    dbConnect,getData,getDataSort 
 }
