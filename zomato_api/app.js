@@ -7,7 +7,7 @@ dotenv.config()
 
 const app = express()
 const port = process.env.PORT;
-const { dbConnect, getData ,getDataSort} = require("./src/controller/dbController")
+const { dbConnect, getData ,getDataSort,getDataSortLimit} = require("./src/controller/dbController")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -67,10 +67,17 @@ app.get('/filters/:mealId', async (req, res) => {
     let cuisineId = Number(req.query.cuisineId)
     let lcost = Number(req.query.lcost)
     let hcost = Number(req.query.hcost)
+    let skip=0;
+    let limit=1000000;
 
     let sort={cost:1};
     if(req.query.sort){
         sort ={cost: req.query.sort}
+    }
+
+    if(req.query.skip&&req.query.limit){
+        skip =Number(req.query.skip)
+        limit =Number(req.query.limit)
     }
     
     if(cuisineId){
@@ -88,7 +95,7 @@ app.get('/filters/:mealId', async (req, res) => {
                     "mealTypes.mealtype_id":mealId
                 }
     }
-    let output = await getDataSort(collName,query,sort);
+    let output = await getDataSortLimit(collName,query,sort,skip,limit);
     res.send(output);
 })
 

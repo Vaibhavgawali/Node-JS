@@ -27,6 +27,15 @@ async function getDataSort(collName,query,sort){
     return output;
 }
 
+async function getDataSortLimit(collName,query,sort,skip,limit){
+    try {
+        output=await db.collection(collName).find(query).sort(sort).skip(skip).limit(limit).toArray();
+    } catch (error) {
+        output= {error:"invalid condition in getDataSortLimit"};   
+    }
+    return output;
+}
+
 module.exports={
-    dbConnect,getData,getDataSort 
+    dbConnect,getData,getDataSort,getDataSortLimit 
 }
