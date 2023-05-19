@@ -1,13 +1,14 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
+const mongo=require("mongodb")
 
 const dotenv = require("dotenv")
 dotenv.config()
 
 const app = express()
 const port = process.env.PORT;
-const { dbConnect, getData ,getDataSort,getDataSortLimit} = require("./src/controller/dbController")
+const { dbConnect, getData ,getDataSort,getDataSortLimit,postData,updateData,deleteData} = require("./src/controller/dbController")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -99,6 +100,78 @@ app.get('/filters/:mealId', async (req, res) => {
     res.send(output);
 })
 
+// details of restaurants
+app.get('/details/:id',async (req,res)=>{
+    let id = mongo.ObjectId(req.params.id);
+    let collection="RestaurantData"
+    let query={_id:id};
+    let output = await getData(collection,query);
+    res.send(output);
+})
+
+// menu wrt reastaurants
+app.get('/menu/:id',async (req,res)=>{
+    let id = Number(req.params.id);
+    const collection="RestaurantMenu"
+    const query={restaurant_id:id}
+    let output = await getData(collection,query);
+    res.send(output);
+})
+
+// orders
+app.get('/orders',async(req,res)=>{
+    let query = {};
+    if(req.query.email){
+        query={email:req.query.email};
+    }
+    let collection = "orders";
+    let output = await getData(collection,query);
+    res.send(output);
+})
+
+// place order
+app.post('/placeOrder',async(req,res)=>{
+    let data = req.body;
+    let collection = "orders";
+    let output=await postData(collection,data);
+    res.send(output);
+})
+
+// menu details {id:[1,5,3]}
+app.post('/menuDetails',async(req, res)=>{
+    if(Array.isArray(req.body.id)){
+        let query = {menu_id:{$in:req.body.id}};
+        let collection="RestaurantMenu"
+        let output = await getData(collection,query);
+        res.send(output);
+    }else{
+        res.send('Please pass data as an array like {id:[1,5,3]}');
+    }
+})
+
+// update order
+app.put('/updateOrder',async(req,res)=>{
+    let collection= "orders"
+    let condition ={"_id": mongo.ObjectId(req.body._id)};
+    let data={
+        $set:{"status":req.body.status}
+    }
+    let output = await updateData(collection,condition,data);
+    res.send(output);
+})
+
+// delete order
+app.delete('/deleteOrder',async(req,res)=>{
+    let collection= "orders"
+    let query ={"_id": mongo.ObjectId(req.body._id)}
+    let data=await getData(collection,query);
+    if(data.length>0){
+        let output = await deleteData(collection,query);
+        res.send(output);
+    }else{
+        res.send('Data not found')
+    }
+})
 
 app.listen(port, (err) => {
     if (err) throw err

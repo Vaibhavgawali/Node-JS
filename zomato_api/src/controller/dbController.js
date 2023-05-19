@@ -1,3 +1,5 @@
+const { query } = require('express');
+
 const mongo =require('mongodb').MongoClient;
 const mongoUrl= process.env.MongoUrl;
 let db;
@@ -36,6 +38,33 @@ async function getDataSortLimit(collName,query,sort,skip,limit){
     return output;
 }
 
+async function postData(colName,data){
+    try {
+        output=await db.collection(colName).insertOne(data);
+    } catch (error) {
+        output={error:error.message};
+    }
+    return  output;
+}
+
+async function updateData(colName,condition,data){
+    try {
+        output=await db.collection(colName).update(condition,data);
+    } catch (error) {
+        output={error:error.message};
+    }
+    return  output;
+}
+
+async function deleteData(colName,query){
+    try {
+        output=await db.collection(colName).remove(query);
+    } catch (error) {
+        output={error:error.message};
+    }
+    return  output;
+}
+
 module.exports={
-    dbConnect,getData,getDataSort,getDataSortLimit 
+    dbConnect,getData,getDataSort,getDataSortLimit,postData,updateData,deleteData 
 }
