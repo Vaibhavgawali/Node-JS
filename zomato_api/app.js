@@ -8,11 +8,17 @@ dotenv.config()
 
 const app = express()
 const port = process.env.PORT;
+const authKey="may"+process.env.Token;
 const { dbConnect, getData ,getDataSort,getDataSortLimit,postData,updateData,deleteData} = require("./src/controller/dbController")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
+
+function auth(key){
+    if(key === authKey) return true
+    else return false
+}
 
 app.get("/", (req, res) => {
     res.send("Ok")
@@ -20,10 +26,15 @@ app.get("/", (req, res) => {
 
 // list of city
 app.get('/location', async (req, res) => {
-    let collName = 'location'
-    let query = {}
-    let city = await getData(collName, query);
-    res.send(city);
+    let key=req.header("x-basic-token")
+    if(auth(key)){
+        let collName = 'location'
+        let query = {}
+        let city = await getData(collName, query);
+        res.send(city);
+    }else{
+        res.send("Unauthenticated");
+    }
 })
 
 // list of restaurant
