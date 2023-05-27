@@ -1,0 +1,13 @@
+{
+    "openapi":"3.0.0",
+    "info":{
+        "description":"This is the api for users",
+        "version":"__version__"
+    },
+    "tags":[
+        {
+            "name":"PUBLIC ROUTE",
+            "description":"Public Route"
+        }
+    ]
+}
