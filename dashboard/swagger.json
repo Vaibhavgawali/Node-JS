@@ -9,5 +9,72 @@
             "name":"PUBLIC ROUTE",
             "description":"Public Route"
         }
-    ]
+    ],
+    "paths":{
+        "/health":{
+            "summary":"Testing User check",
+            "get":{
+                "description":"Testing Users for the app ",
+                "tags":["PUBLIC ROUTE"],
+                "responses":{
+                    "200":{
+                        "description":"User pass"
+                    }
+                }
+            }
+        },
+        "/users":{
+            "summary":"Testing User Route",
+            "get":{
+                "description":"Testing Users Route for the app ",
+                "tags":["PUBLIC ROUTE"],
+                "parameters":[
+                    {
+                        "in":"query",
+                        "name":"role",
+                        "schema":{
+                            "type":"string"
+                        },
+                        "description":"Choose role as Admin or User"
+                    },
+                    {
+                        "in":"query",
+                        "name":"city",
+                        "schema":{
+                            "type":"string"
+                        },
+                        "description":"Enter city"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"User pass"
+                    }
+                }
+            }
+        },
+        "/user/{id}":{
+            "summary":"Testing User check",
+            "get":{
+                "description":"Testing Users for the app ",
+                "tags":["PUBLIC ROUTE"],
+                "parameters":[
+                    {
+                        "in":"path",
+                        "name":"id",
+                        "required":true,
+                        "schema":{
+                            "type":"string"
+                        },
+                        "description":"Enter Object id"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"User pass"
+                    }
+                }
+            }
+        }
+    }
 }
