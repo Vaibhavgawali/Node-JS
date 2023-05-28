@@ -35,8 +35,28 @@ app.get("/health",(req,res)=>{
     res.send("Health Ok");
 })
 
+app.get('/new',(req,res)=>{
+    res.render("forms");
+})
+
+app.get('/',async(req,res)=>{
+    let output=[]
+    const cursor= collection.find()
+    for await(let data of cursor){
+        output.push(data)
+    }
+    cursor.closed
+    res.render("index",{data:output});
+})
+
 app.post('/addUser',async (req,res)=>{
-    let data=req.body;
+    let data={
+                name:req.body.name,
+                city:req.body.city,
+                phone:req.body.phone,
+                role:req.body.role?req.body.role:"User",
+                isActive:true
+            };
     await collection.insertOne(data);
     res.send("data inserted")
 })
