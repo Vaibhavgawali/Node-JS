@@ -2,10 +2,10 @@
   "name": "dashboard",
   "version": "1.0.0",
   "description": "",
-  "main": "apiwithoutui.js",
+  "main": "apiwithui.js",
   "scripts": {
-    "start": "node apiwithoutui.js",
-    "dev": "nodemon apiwithoutui.js",
+    "start": "node apiwithui.js",
+    "dev": "nodemon apiwithui.js",
     "test":"mocha --timeout 10000"
   },
   "keywords": [],
