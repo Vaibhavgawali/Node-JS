@@ -5,7 +5,8 @@ const port = process.env.PORT || 7710;
 // mongodb connection setup
 const mongo=require("mongodb")
 const {MongoClient} = require("mongodb");
-const url="mongodb://127.0.0.1";
+// const url="mongodb://127.0.0.1";
+const url="mongodb+srv://admin:gy2TtDMKuT1Wz6o3@cluster0.b50rznn.mongodb.net/?retryWrites=true&w=majority";
 const client=new MongoClient(url);
 async function main() {
     await client.connect();
